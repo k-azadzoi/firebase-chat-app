@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import {Form, Icon, Button, Input, Card } from 'antd'
+import {Form, Button, Input, Card } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { Container } from '../styles/styles'
 
 const Signup = (props) => {
@@ -28,7 +29,7 @@ const Signup = (props) => {
                     style={{width: 300, textAlign: 'center'}} 
                 >
                     <Form onSubmit={handleSubmit}>
-                        <Input
+                        <Input   
                             id='name'
                             name='name'
                             type='text'
@@ -37,6 +38,7 @@ const Signup = (props) => {
                             onChange={handleInputChange}
                         />
                          <Input
+                            prefix={<UserOutlined />}
                             id='email'
                             name='email'
                             type='text'
@@ -44,7 +46,8 @@ const Signup = (props) => {
                             style={{margingBottom: '10px', marginTop: '10px'}}
                             onChange={handleInputChange}
                         />
-                        <Input
+                        <Input.Password
+                            prefix={<LockOutlined />}
                             id='password'
                             name='password'
                             type='text'
@@ -57,7 +60,7 @@ const Signup = (props) => {
                             htmlType='submit'
                             style={{width: '100%', marginBottom: '10px', marginTop: '10px'}}
                         > 
-                            Submit 
+                            Signup 
                         </Button>
                         Or
                         <Button
