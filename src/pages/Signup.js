@@ -1,80 +1,84 @@
-import React, { useState } from 'react'
-import {Form, Button, Input, Card } from 'antd'
+import React, { Component, useState } from 'react'
+import { Form, Button, Input, Card } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { Link } from 'react-router-dom'
 import { Container } from '../styles/styles'
+import { signup } from '../helpers/auth'
 
-const Signup = (props) => {
-    const [user, setUser] = useState({
-        name: '',
-        email: '',
-        password: ''
-    })
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
+class Signup extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            error: null,
+            email: '',
+            password: ''
+        }
+        this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
 
-    const handleInputChange = (event) => {
-        event.preventDefault()
-        setUser({
-            ...user, [event.target.id]: event.target.value 
+   async handleSubmit(event){
+       event.preventDefault()
+       this.setState({ error: '' })
+       try {
+           await signup(this.state.email, this.state.password)
+       } 
+       catch(error){
+           this.setState( {error: error.message })
+       }
+   }
+    
+    handleChange(event) {
+        this.setState({
+            [event.target.name] : event.target.value
         })
     }
 
-    return (
-        <> 
+    render(){
+        return(
             <Container>
                 <Card
-                    title='Signup'
-                    style={{width: 300, textAlign: 'center'}} 
+                    style={{width: 400, textAlign: 'center'}} 
                 >
-                    <Form onSubmit={handleSubmit}>
-                        <Input   
-                            id='name'
-                            name='name'
-                            type='text'
-                            placeholder='Name'
-                            style={{margingBottom: '10px'}}
-                            onChange={handleInputChange}
-                        />
-                         <Input
-                            prefix={<UserOutlined />}
+                    <form onSubmit={this.handleSubmit}>
+                    <h1>Sign Up to 
+                        <Link to='/'> Stay Connected</Link>
+                    </h1>
+                    <p> Fill out the form blew to create an account. </p>
+                    <div style={{width: 300, margin: 'auto', marginBottom: '10px'}}>
+                        <input
                             id='email'
                             name='email'
-                            type='text'
+                            type='email'
+                            style={{paddingLeft: '2px'}}
                             placeholder='Email'
-                            style={{margingBottom: '10px', marginTop: '10px'}}
-                            onChange={handleInputChange}
+                            onChange={this.handleChange}
+                            value={this.state.email}
                         />
-                        <Input.Password
-                            prefix={<LockOutlined />}
+                    </div>
+                    <div style={{width: 300, margin: 'auto', marginBottom: '10px'}}>
+                        <input
                             id='password'
                             name='password'
-                            type='text'
+                            type='password'
+                            style={{paddingLeft: '2px'}}
                             placeholder='Password'
-                            style={{margingBottom: '10px', marginTop: '10px'}}
-                            onChange={handleInputChange}
+                            onChange={this.handleChange}
+                            value={this.state.password}
                         />
-                        <Button
-                            type='primary'
-                            htmlType='submit'
-                            style={{width: '100%', marginBottom: '10px', marginTop: '10px'}}
-                        > 
-                            Signup 
-                        </Button>
-                        Or
-                        <Button
-                            type='primary'
-                            style={{width: '100%', marginBottom: '10px', marginTop: '10px'}}
-                            onClick={() => {props.history.push('/login')}}
-                        >
-                            Login
-                        </Button>
-                    </Form>
+                    </div>
+                    <div style={{margin: 'auto'}}>
+                        {this.state.error ? <p> {this.state.error} </p> : null}
+                        <button type='submit'>Sign Up</button>
+                    </div>
+                    <hr></hr>
+                    <p>Already have an account? <Link to='/login'>Login</Link></p>
+                    </form>
                 </Card>
-            </Container> 
-        </>
-    )
+            </Container>
+        )
+    }
 }
 
 export default Signup
+

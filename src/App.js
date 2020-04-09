@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Component, useState } from 'react';
 import {
   BrowserRouter as Router,
   Route, 
@@ -13,43 +13,90 @@ import Signup from './pages/Signup'
 import { auth } from './services/firebase'
 
 const PrivateRoute = ({ component: Component, authenticated, ...rest }) => {
-  console.log({...rest})
   return(
     <Route 
       {...rest}
-      render={ (props) => authenticated === true
-      ? <Component {...props}/>
-      : <Redirect to={{ pathname: '/login', state: { from: props.location } }}/> }
+      render={ (props) => 
+        authenticated === true ? ( <Component {...props}/> 
+          ) : (
+          <Redirect 
+            to={{ pathname: '/login', state: { from: props.location } }}
+          />
+          ) 
+        }
     />
   )  
 }
 
-const PublicRoute = ( { component: Component, authenticated, ...rest }) => {
+const PublicRoute = ({ component: Component, authenticated, ...rest }) => {
   return(
     <Route 
       {...rest}
-      render={ (props) => authenticated === false
-      ? <Component {...props}/>
-      : <Redirect to='/chat' /> } 
+      render={ (props) => 
+        authenticated === false ? (
+          <Component {...props}/> 
+          ) : (
+            <Redirect to='/chat' />
+          ) 
+      } 
     />
   )
 }
 
-const App = () => {
-  const [authenticated, setAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
-  
+class App extends Component {
+  constructor(){
+    super()
+    this.state = {
+      authenticated: false,
+      loading: true
+    }
+  }
 
-  return loading === false ? <h2> Loading... </h2> : (
-    <Router>
-      <Switch>
-        <Route exact path='/' component={Home}></Route>
-        <PrivateRoute path='/chat' authenticated={authenticated} component={Chat}></PrivateRoute>
-        <PublicRoute path='/signup' authenticated={authenticated} component={Signup}></PublicRoute>
-        <PublicRoute path='/login' authenticated={authenticated} component={Login}></PublicRoute>
-      </Switch>
-    </Router>
-  );
+  componentDidMount() {
+    auth.onAuthStateChanged((user) => {
+      if(user) {
+        this.setState({
+          authenticated: true,
+          loading: false
+        })
+      }
+      else {
+        this.setState({
+          authenticated: false,
+          loading: false
+        })
+      }
+    })
+  }
+
+
+  render() {
+    return this.state.loading === true ? <h2> Loading... </h2> : (
+      <Router>
+        <Switch>
+          <Route 
+            exact path='/' 
+            component={Home}
+          />
+          <PrivateRoute 
+            path='/chat' 
+            authenticated={this.state.authenticated} 
+            component={Chat}
+          />
+          <PublicRoute 
+            path='/signup' 
+            authenticated={this.state.authenticated} 
+            component={Signup}
+          />
+          <PublicRoute 
+            path='/login' 
+            authenticated={this.state.authenticated} 
+            component={Login}
+          />
+        </Switch>
+      </Router>
+    );
+  }
 }
 
 export default App;
