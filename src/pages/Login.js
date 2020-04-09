@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Card } from 'antd'
 import { Link } from 'react-router-dom'
 import { Container } from '../styles/styles'
-import { signin } from '../helpers/auth'
+import { signin, signInWithGoogle } from '../helpers/auth'
 
 class Login extends Component {
     constructor(props){

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Card } from 'antd'
 import { Link } from 'react-router-dom'
 import { Container } from '../styles/styles'
-import { signup } from '../helpers/auth'
+import { signup, signInWithGoogle } from '../helpers/auth'
 
 class Signup extends Component {
     constructor(props){
@@ -14,6 +14,7 @@ class Signup extends Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleChange = this.handleChange.bind(this)
+        this.googleSignIn = this.googleSignIn.bind(this)
     }
 
    async handleSubmit(event){
@@ -24,6 +25,15 @@ class Signup extends Component {
        } 
        catch(error){
            this.setState( {error: error.message })
+       }
+   }
+
+   async googleSignIn(){
+       try {
+           await signInWithGoogle()
+       } 
+       catch(error) {
+            this.setState({ error: error.message })
        }
    }
     
@@ -70,6 +80,10 @@ class Signup extends Component {
                         {this.state.error ? <p> {this.state.error} </p> : null}
                         <button type='submit'>Sign Up</button>
                     </div>
+                    <p> Or </p>
+                    <button onClick={this.googleSignIn} type='button'>
+                        Sign up with Google
+                    </button>
                     <hr></hr>
                     <p>Already have an account? <Link to='/login'>Login</Link></p>
                     </form>
