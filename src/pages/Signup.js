@@ -1,6 +1,5 @@
-import React, { Component, useState } from 'react'
-import { Form, Button, Input, Card } from 'antd'
-import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import React, { Component } from 'react'
+import { Card } from 'antd'
 import { Link } from 'react-router-dom'
 import { Container } from '../styles/styles'
 import { signup } from '../helpers/auth'
