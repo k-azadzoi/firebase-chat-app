@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Header from '../components/Header'
+import { Container } from '../styles/styles'
 import { auth } from '../services/firebase'
 import { db } from '../services/firebase'
 
@@ -54,28 +55,48 @@ class Chat extends Component {
         }
     }
 
+    formatTime(timestamp){
+        const d = new Date(timestamp)
+        const time = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`
+        return time
+    }
+
     render(){
         return(
             <div>
                 <Header/>
+                <Container>
                 <div>
                     {
                         this.state.chats.map(chat => {
-                            return <p key={chat.timestamp}>{chat.content}</p>
+                            return <p key={chat.timestamp}>{chat.content}
+                                <br/>
+                        <span>
+                            {
+                                this.formatTime(chat.timestamp)
+                            }
+                        </span>
+                            </p>
                         })
+                        
                     }
                 </div>
-                <form onSubmit={this.handleSubmit}>
-                    <input
+                </Container>
+                <form style={{textAlign: 'center'}}onSubmit={this.handleSubmit}>
+                    <textarea
                         onChange={this.handleChange}
                         value={this.state.content}
-                    />
+                    >
+                    </textarea>
                     {this.state.error ? <p>{this.state.writeError}</p> : null}
-                    <button type='submit'>Send</button>
+                    <div>
+                        <button type='submit'>Send</button>
+                    </div>
                 </form>
                 <div>
                     Login in as: <strong>{this.state.user.email}</strong>
                 </div>
+                
             </div>
         )
     }
